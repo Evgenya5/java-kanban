@@ -1,4 +1,6 @@
-import java.util.Scanner;
+import logic.TaskManager;
+import  data.*;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -6,140 +8,57 @@ public class Main {
 
         System.out.println("Поехали!");
         TaskManager taskManager = new TaskManager();
-        Scanner scanner = new Scanner(System.in);
+        Subtask subtask1 = new Subtask("sub1", "sub1desc", -1);
+        Subtask subtask2 = new Subtask("sub2", "sub2desc", -1);
+        Subtask subtask3 = new Subtask("sub3", "sub3desc", -1);
+        Subtask subtask4 = new Subtask("sub4", "sub4desc", -1);
+        Subtask subtask5 = new Subtask("sub5", "sub5desc", -1);
+        Task task1 = new Task("task1", "task1desc");
+        Task task2 = new Task("task2", "task2desc");
+        Task task3 = new Task("task3", "task3desc");
+        ArrayList<Integer> subtasks1 = new ArrayList<>();
+        Epic epic1 = new Epic("epic1", "epic1desc");
+        taskManager.createTask(subtask1);
+        taskManager.createTask(subtask2);
+        taskManager.createTask(subtask3);
+        subtasks1.add(subtask1.getId());
+        subtasks1.add(subtask3.getId());
+        epic1.setSubtasks(subtasks1);
+        taskManager.createTask(epic1);
+        taskManager.createTask(task1);
+        taskManager.createTask(task2);
+        taskManager.createTask(task3);
+        System.out.println("Вывели все");
+        System.out.println(taskManager.getAllTaskList());
+        subtask5.setEpicId(3);
+        subtask5.setStatus(TaskStatus.DONE);
+        subtask5.setId(2);
+        subtask4.setStatus(TaskStatus.DONE);
+        taskManager.updateSubtask(subtask5);
+        subtask5.setEpicId(3);
+        subtask4.setId(0);
+        taskManager.updateSubtask(subtask4);
+        //taskManager.deleteSubtaskById(2);
+        System.out.println("Вывели все");
+        System.out.println(taskManager.getAllTaskList());
 
-        while (true) {
-            printMenu();
-            String command = scanner.nextLine();
-
-            switch (command) {
-                case "1" -> {
-                    System.out.println("Что вы хотите создать: T - Task, ST - Subtask, E - Epic?");
-                    String taskType = scanner.nextLine();
-                    System.out.println("Введите наименование задачи");
-                    String taskName = scanner.nextLine();
-                    System.out.println("Введите описание задачи");
-                    String taskDescription = scanner.nextLine();
-                    if (taskType.equals("E")) {
-                        Epic epic = new Epic(taskName, taskDescription, TaskStatus.NEW);
-                        System.out.println("Введите ид подзадач через Enter, которые нужно добавить к эпику. Для завершения ввода введите '-1'");
-                        int nextId = scanner.nextInt();
-                        while (nextId>=0) {
-                            if (taskManager.subtaskExist(nextId)) {
-                                epic.addSubtasks((Subtask) taskManager.getTaskById(nextId));
-                            } else {
-                                System.out.println("Нет такой подзадачи, введи ИД еще раз");
-                            }
-                            nextId = scanner.nextInt();
-                        }
-                        boolean result = taskManager.createTask(epic);
-                        System.out.println("Эпик " + (result?" создан": " не создан"));
-                    } else if (taskType.equals("ST")) {
-                        Subtask subtask = new Subtask(taskName, taskDescription, TaskStatus.NEW);
-                        boolean result = taskManager.createTask(subtask);
-                        System.out.println("Подзадача " + (result?" создана": " не создана"));
-                    } else {
-                        Task task = new Task(taskName, taskDescription, TaskStatus.NEW);
-                        boolean result = taskManager.createTask(task);
-                        System.out.println("Задача " + (result?" создана": " не создана"));
-                    }
-                }
-                case "2" -> taskManager.getTaskList();
-                case "3" -> {
-                    System.out.println("Введите id задачи");
-                    int taskId = scanner.nextInt();
-                    scanner.nextLine();
-                    boolean result = taskManager.deleteTaskById(taskId);
-                    System.out.println("задача с id: " + taskId + (result?" удалена": " не удалена"));
-                }
-                case "4" -> {
-                    taskManager.deleteAllTasks();
-                    System.out.println("Все задачи удалены");
-                }
-                case "5" -> {
-                    System.out.println("Введите id задачи");
-                    int taskId = scanner.nextInt();
-                    scanner.nextLine();
-                    System.out.println("Введите наименование задачи");
-                    String taskName = scanner.nextLine();
-                    System.out.println("Введите описание задачи");
-                    String taskDescription = scanner.nextLine();
-                    if (taskManager.taskExist(taskId)) {
-                        System.out.println("Введите статус задачи из списка NEW, IN_PROGRESS, DONE: ");
-                        String status = scanner.next();
-                        TaskStatus taskStatus = TaskStatus.valueOf(status);
-                        Task task = (Task) taskManager.getTaskById(taskId);
-                        task.setName(taskName);
-                        task.setDescription(taskDescription);
-                        task.setStatus(taskStatus);
-                        taskManager.updateTask(taskId, task);
-                        System.out.println("Задача обновлена" + task);
-                    } else if (taskManager.subtaskExist(taskId)) {
-                        System.out.println("Введите статус задачи из списка NEW, IN_PROGRESS, DONE: ");
-                        String status = scanner.next();
-                        TaskStatus taskStatus = TaskStatus.valueOf(status);
-                        Subtask subtask = (Subtask) taskManager.getTaskById(taskId);
-                        subtask.setName(taskName);
-                        subtask.setDescription(taskDescription);
-                        subtask.setStatus(taskStatus);
-                        taskManager.updateTask(taskId,subtask);
-                        System.out.println("Подзадача обновлена" + subtask);
-                    } else if (taskManager.epicExist(taskId)) {
-                        Epic epic = (Epic) taskManager.getTaskById(taskId);
-                        epic.setName(taskName);
-                        epic.setDescription(taskDescription);
-                        System.out.println("Добавить сабтаски? Y / N");
-                        String answer = scanner.nextLine();
-                        if (answer.equals("Y")) {
-                            System.out.println("Введите ид подзадач через Enter, которые нужно добавить к эпику. Для завершения ввода введите '-1'");
-                            int nextId = scanner.nextInt();
-                            while (nextId>=0) {
-                                if (taskManager.subtaskExist(nextId)) {
-                                    epic.addSubtasks((Subtask) taskManager.getTaskById(nextId));
-                                } else {
-                                    System.out.println("Нет такой подзадачи, введи ИД еще раз");
-                                }
-                                nextId = scanner.nextInt();
-                            }
-                        }
-                        taskManager.updateTask(taskId, epic);
-                    }
-                }
-                case "6" -> {
-                    System.out.println("Введите id задачи");
-                    int taskId = scanner.nextInt();
-                    scanner.nextLine();
-                    if (taskManager.subtaskExist(taskId)) {
-                        Subtask subtask = (Subtask) taskManager.getTaskById(taskId);
-                        System.out.println("задача с id: " + taskId + " " + subtask);
-                    } else if (taskManager.taskExist(taskId)) {
-                        Task task = (Task) taskManager.getTaskById(taskId);
-                        System.out.println("задача с id: " + taskId + " " + task);
-                    } else if (taskManager.epicExist(taskId)) {
-                        Epic epic = (Epic) taskManager.getTaskById(taskId);
-                        System.out.println("задача с id: " + taskId + " " + epic);
-                    }
-                }
-                case "7" -> {
-                    System.out.println("Вы вышли из программы. Хорошего дня! :)");
-                    return;
-                }
-                default -> System.out.println("Такой команды нет! Повторите ввод.");
-            }
-        }
-
-
-
-    }
-
-    private static void printMenu() {
-        System.out.println("Выберите команду:");
-        System.out.println("1 - Создать задачу");
-        System.out.println("2 - Получить список всех задач");
-        System.out.println("3 - Удалить задачу по ид");
-        System.out.println("4 - Удалить все задачи");
-        System.out.println("5 - Изменить задачу по ид");
-        System.out.println("6 - Получить задачу по ид");
-        System.out.println("7 - Выход");
+        Epic epic2  = new Epic("epic1update", "epic1descupdate");
+        System.out.println("1 epic id 3 = " + taskManager.getEpicById(3));
+        ArrayList<Integer> subtasks = new ArrayList<>();
+        subtasks.add(0);
+        subtasks.add(1);
+        epic2.setSubtasks(subtasks);
+        epic2.setId(3);
+        taskManager.updateEpic(epic2);
+        System.out.println("Вывели все ");
+        System.out.println(taskManager.getAllTaskList());
+        taskManager.deleteTaskById(task1.getId());
+        System.out.println("Удалили таск 1");
+        System.out.println(taskManager.getTaskList());
+        taskManager.deleteAllTasks();
+        System.out.println("Удалили все таски");
+        System.out.println(taskManager.getTaskList());
+        taskManager.deleteTaskById(task3.getId());
+        System.out.println(taskManager.getTaskList());
     }
 }

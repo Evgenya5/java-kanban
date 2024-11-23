@@ -1,3 +1,5 @@
+package data;
+
 import java.util.Objects;
 
 public class Task {
@@ -6,10 +8,10 @@ public class Task {
     private String description;
     private TaskStatus status;
 
-    public Task(String name, String description, TaskStatus status) {
+    public Task(String name, String description) {
         this.name = name;
         this.description = description;
-        this.status = status;
+        this.status = TaskStatus.NEW;
     }
 
     public int getId() {
@@ -58,11 +60,12 @@ public class Task {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Task task)) return false;
-        return Objects.equals(name, task.name) && Objects.equals(description, task.description);
+        Task t = (Task) o;
+        return t.id == id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description);
+        return Objects.hash(id);
     }
 }

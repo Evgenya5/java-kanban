@@ -30,6 +30,12 @@ public class Main {
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         taskManager.createTask(task3);
+        System.out.println("Вывели все subtask by epic1");
+        System.out.println(taskManager.getSubtaskListByEpic(epic1Id));
+        System.out.println("Вывели все subtask by epic2");
+        System.out.println(taskManager.getSubtaskListByEpic(epic2Id));
+        System.out.println("Вывели все subtask by 100");
+        System.out.println(taskManager.getSubtaskListByEpic(100));
         System.out.println("Вывели все");
         System.out.println(taskManager.getEpicList());
         System.out.println(taskManager.getSubtaskList());
@@ -40,7 +46,7 @@ public class Main {
         taskManager.updateSubtask(subtask2);
         taskManager.updateSubtask(subtask5);
         taskManager.updateSubtask(subtask4);
-        taskManager.deleteEpicById(1);
+        //taskManager.deleteEpicById(1);
         System.out.println("Вывели все");
         System.out.println(taskManager.getEpicList());
         System.out.println(taskManager.getSubtaskList());

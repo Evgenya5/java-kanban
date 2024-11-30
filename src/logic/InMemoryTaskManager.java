@@ -9,11 +9,8 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
-    private InMemoryHistoryManager inMemoryHistoryManager = (InMemoryHistoryManager) Managers.getDefaultHistory();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    private int generateId() {
-        return idCount++;
-    }
     @Override
     public int createTask(Task task) { //Создание. Сам объект должен передаваться в качестве параметра
         int taskId = generateId();
@@ -95,33 +92,28 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) { //Получение задачи по идентификатору.
         Task task = tasks.get(id);
-        if (task != null) {
-            inMemoryHistoryManager.add(task);
-        }
+        historyManager.add(task);
         return task;
     }
 
     @Override
     public Subtask getSubtaskById(int id) { //Получение подзадачи по идентификатору.
-        Task task = (Task) subtasks.get(id);
-        if (task != null) {
-            inMemoryHistoryManager.add(task);
-        }
-        return subtasks.get(id);
+        Subtask subtask = subtasks.get(id);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
     public Epic getEpicById(int id) { //Получение эпика по идентификатору.
-        Task task = (Task) epics.get(id);
-        if (task != null) {
-            inMemoryHistoryManager.add(task);
-        }
-        return epics.get(id);
+        Epic epic = epics.get(id);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
     public void updateSubtask(Subtask subtask) { //Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
         Subtask savedSubtask = subtasks.get(subtask.getId());
+
         if (savedSubtask == null) {
             return;
         }
@@ -176,6 +168,15 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    @Override
+    public ArrayList<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
+    private int generateId() {
+        return idCount++;
+    }
+
     private boolean subtaskExist(int id) {
         return subtasks.containsKey(id);
     }
@@ -213,10 +214,5 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         return epic;
-    }
-
-    @Override
-    public ArrayList<Task> getHistory() {
-        return inMemoryHistoryManager.getHistory();
     }
 }

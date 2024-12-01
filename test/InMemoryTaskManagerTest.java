@@ -32,7 +32,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void AddHistoryAndGetHistoryList() {
+    void addHistoryAndGetHistoryList() {
         ArrayList<Task> histories = new ArrayList<>();
         Task taskById = taskManager.getTaskById(taskId);
         Subtask subtaskById = taskManager.getSubtaskById(subtaskId);
@@ -61,7 +61,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void EpicCantBeSubtaskForYourself() {
+    public void epicCantBeSubtaskForYourself() {
         Subtask subtaskByID = taskManager.getSubtaskById(subtaskId);
         assertNotNull(subtaskByID, "Подзадача не найдена.");
         assertNotEquals(subtaskByID.getId(), epic.getId(), "ID равны");
@@ -69,7 +69,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void EpicIdGenerateAutomatically() {
+    public void epicIdGenerateAutomatically() {
         Epic epic2 = new Epic("epic2", "epic2");
         epic2.setId(epicId);
         taskManager.createTask(epic2);
@@ -77,7 +77,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void EpicNotChange() {
+    public void epicNotChange() {
         Epic epicById = taskManager.getEpicById(epicId);
         assertEquals(epic.getName(), epicById.getName(), "Name не равны");
         assertEquals(epic.getDescription(), epicById.getDescription(), "Description не равны");
@@ -164,7 +164,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void SubtaskCantBeEpicForYourself() {
+    public void subtaskCantBeEpicForYourself() {
         Subtask subtaskByID = taskManager.getSubtaskById(subtaskId);
         assertNotNull(subtaskByID, "Подзадача не найдена.");
         subtaskByID.setEpicId(subtaskId);
@@ -173,7 +173,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void SubtaskIdGenerateAutomatically() {
+    public void subtaskIdGenerateAutomatically() {
         Subtask subtask2 = new Subtask("st2", "st2", 0);
         subtask2.setId(subtaskId);
         taskManager.createTask(subtask2);
@@ -181,7 +181,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void SubtaskNotChange() {
+    public void subtaskNotChange() {
         Subtask subtaskById = taskManager.getSubtaskById(subtaskId);
         assertEquals(subtask.getName(), subtaskById.getName(), "Name не равны");
         assertEquals(subtask.getDescription(), subtaskById.getDescription(), "Description не равны");
@@ -250,7 +250,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void TaskIdGenerateAutomatically() {
+    public void taskIdGenerateAutomatically() {
         Task task2 = new Task("t2", "t2");
         task2.setId(taskId);
         taskManager.createTask(task2);
@@ -258,7 +258,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    public void TaskNotChange() {
+    public void taskNotChange() {
         Task taskById = taskManager.getTaskById(taskId);
         assertEquals(task.getName(), taskById.getName(), "Name не равны");
         assertEquals(task.getDescription(), taskById.getDescription(), "Description не равны");

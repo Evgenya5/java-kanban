@@ -7,9 +7,6 @@ import data.Task;
 import java.util.ArrayList;
 
 public interface TaskManager {
-    private int generateId() {
-        return 0;
-    }
 
     int createTask(Task task);
 

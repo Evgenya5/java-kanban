@@ -1,16 +1,6 @@
-import data.Subtask;
 import data.Task;
-import logic.InMemoryTaskManager;
-import logic.Managers;
-import logic.TaskManager;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TaskTest {
 

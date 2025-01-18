@@ -4,7 +4,7 @@ import data.Task;
 
 import java.util.*;
 
-public class InMemoryHistoryManager implements HistoryManager{
+public class InMemoryHistoryManager implements HistoryManager {
 
 
     private Map<Integer, Node> taskHistoryHashMap = new HashMap<>();

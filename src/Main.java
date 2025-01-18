@@ -51,15 +51,16 @@ public class Main {
         System.out.println("Вывели все");
         System.out.println(taskManager.getEpicList());
         System.out.println(taskManager.getSubtaskList());
-        taskManager.deleteSubtaskById(2);
+        //taskManager.deleteSubtaskById(2);
         System.out.println("Вывели все");
         System.out.println(taskManager.getEpicList());
         taskManager.deleteSubtaskById(4);
         //inMemoryTaskManager.deleteAllSubtasks();
-        System.out.println("Вывели все");
+        System.out.println("Вывели все with histor");
         System.out.println(taskManager.getEpicList());
         System.out.println(taskManager.getHistory().size());
         System.out.println(taskManager.getHistory());
+        System.out.println("start get by id");
         taskManager.getEpicById(0);
         taskManager.getSubtaskById(6);
         taskManager.getTaskById(8);

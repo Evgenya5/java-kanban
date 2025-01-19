@@ -58,7 +58,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void checkAddOneTaskTwice() { //теперь проверяем что история не имеет макс ограничения
+    void checkAddOneTaskTwice() { //проверяем что одна и та же задача не добавляется дважды
         ArrayList<Task> history;
 
         history = historyManager.getHistory();
@@ -74,7 +74,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void checkDeleteTask() { //теперь проверяем что история не имеет макс ограничения
+    void checkDeleteTask() { //проверяем удаление из истории
         ArrayList<Task> history;
 
         history = historyManager.getHistory();
@@ -87,10 +87,49 @@ class InMemoryHistoryManagerTest {
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
         assertEquals(0, history.size(), "История не пустая.");
+        task = new Task("t1", "t2");
+        task.setId(1);
+        historyManager.add(task);
+        task = new Task("t2", "t2");
+        task.setId(2);
+        historyManager.add(task);
+        task = new Task("t3", "t2");
+        task.setId(3);
+        historyManager.add(task);
+        task = new Task("t4", "t2");
+        task.setId(4);
+        historyManager.add(task);
+        task = new Task("t5", "t2");
+        task.setId(5);
+        historyManager.add(task);
+        history = historyManager.getHistory();
+        assertNotNull(history, "История null.");
+        assertEquals(5, history.size(), "История не равна 5");
+        historyManager.remove(3);
+        history = historyManager.getHistory();
+        assertNotNull(history, "История null.");
+        assertEquals(4, history.size(), "История не равна 4");
+        assertEquals(1, history.get(0).getId(), "ИД первого элемента неверно");
+        assertEquals(2, history.get(1).getId(), "ИД второго элемента неверно");
+        assertEquals(4, history.get(2).getId(), "ИД третьего элемента неверно");
+        assertEquals(5, history.get(3).getId(), "ИД четвертого элемента неверно");
+        historyManager.remove(5);
+        history = historyManager.getHistory();
+        assertNotNull(history, "История null.");
+        assertEquals(3, history.size(), "История не равна 3");
+        assertEquals(1, history.get(0).getId(), "ИД первого элемента неверно");
+        assertEquals(2, history.get(1).getId(), "ИД второго элемента неверно");
+        assertEquals(4, history.get(2).getId(), "ИД третьего элемента неверно");
+        historyManager.remove(1);
+        history = historyManager.getHistory();
+        assertNotNull(history, "История null.");
+        assertEquals(2, history.size(), "История не равна 2");
+        assertEquals(2, history.get(0).getId(), "ИД первого элемента неверно");
+        assertEquals(4, history.get(1).getId(), "ИД второго элемента неверно");
     }
 
     @Test
-    void checkgetTaskListOrder() { //теперь проверяем что история не имеет макс ограничения
+    void checkGetTaskListOrder() { //проверяем порядок элементов в истории
         ArrayList<Task> history;
 
         history = historyManager.getHistory();

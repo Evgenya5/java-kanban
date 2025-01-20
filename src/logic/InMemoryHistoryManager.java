@@ -3,19 +3,19 @@ package logic;
 import data.Task;
 import java.util.*;
 
-class Node {
-    public Task data;
-    public Node next;
-    public Node prev;
-
-    public Node(Node prev, Task data, Node next) {
-        this.data = data;
-        this.next = next;
-        this.prev = prev;
-    }
-}
-
 public class InMemoryHistoryManager implements HistoryManager {
+
+    private static class Node {
+        public Task data;
+        public Node next;
+        public Node prev;
+
+        public Node(Node prev, Task data, Node next) {
+            this.data = data;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
 
     private Map<Integer, Node> taskHistoryHashMap = new HashMap<>();
     private Node head; //Указатель на первый элемент списка. Он же first

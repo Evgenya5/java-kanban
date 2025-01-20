@@ -4,18 +4,28 @@ import logic.Managers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
-
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
     HistoryManager historyManager;
     Task task;
+    Task task1;
+    Task task2;
+    Task task3;
     private static final int HISTORY_MAX_SIZE = 10;
 
     @BeforeEach
     public void beforeEach() {
         historyManager = Managers.getDefaultHistory();
-        task = new Task("task1", "task2");
+        task = new Task("task", "task");
+        task.setId(0);
+        task1 = new Task("t1", "t1");
+        task1.setId(1);
+        task2 = new Task("t2", "t2");
+        task2.setId(2);
+        task3 = new Task("t3", "t3");
+        task3.setId(3);
     }
 
     @Test
@@ -74,58 +84,57 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void checkDeleteTask() { //проверяем удаление из истории
+    void checkDeleteFirstTask() { //проверяем удаление из истории
         ArrayList<Task> history;
 
         history = historyManager.getHistory();
         assertEquals(0, history.size(), "История не пустая.");
-        historyManager.add(task);
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(1, history.size(), "История не равна 1");
-        historyManager.remove(task.getId());
+        assertEquals(List.of(task1, task2,task3), history, "История не верна");
+        historyManager.remove(task1.getId());
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
+        assertEquals(List.of(task2,task3), history, "История не верна");
+    }
+
+    @Test
+    void checkDeleteMiddleTask() { //проверяем удаление из истории
+        ArrayList<Task> history;
+
+        history = historyManager.getHistory();
         assertEquals(0, history.size(), "История не пустая.");
-        task = new Task("t1", "t2");
-        task.setId(1);
-        historyManager.add(task);
-        task = new Task("t2", "t2");
-        task.setId(2);
-        historyManager.add(task);
-        task = new Task("t3", "t2");
-        task.setId(3);
-        historyManager.add(task);
-        task = new Task("t4", "t2");
-        task.setId(4);
-        historyManager.add(task);
-        task = new Task("t5", "t2");
-        task.setId(5);
-        historyManager.add(task);
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(5, history.size(), "История не равна 5");
-        historyManager.remove(3);
+        assertEquals(List.of(task1, task2,task3), history, "История не верна");
+        historyManager.remove(task2.getId());
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(4, history.size(), "История не равна 4");
-        assertEquals(1, history.get(0).getId(), "ИД первого элемента неверно");
-        assertEquals(2, history.get(1).getId(), "ИД второго элемента неверно");
-        assertEquals(4, history.get(2).getId(), "ИД третьего элемента неверно");
-        assertEquals(5, history.get(3).getId(), "ИД четвертого элемента неверно");
-        historyManager.remove(5);
+        assertEquals(List.of(task1,task3), history, "История не верна");
+    }
+
+    @Test
+    void checkDeleteLastTask() { //проверяем удаление из истории
+        ArrayList<Task> history;
+
+        history = historyManager.getHistory();
+        assertEquals(0, history.size(), "История не пустая.");
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.add(task3);
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(3, history.size(), "История не равна 3");
-        assertEquals(1, history.get(0).getId(), "ИД первого элемента неверно");
-        assertEquals(2, history.get(1).getId(), "ИД второго элемента неверно");
-        assertEquals(4, history.get(2).getId(), "ИД третьего элемента неверно");
-        historyManager.remove(1);
+        assertEquals(List.of(task1, task2,task3), history, "История не верна");
+        historyManager.remove(task3.getId());
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(2, history.size(), "История не равна 2");
-        assertEquals(2, history.get(0).getId(), "ИД первого элемента неверно");
-        assertEquals(4, history.get(1).getId(), "ИД второго элемента неверно");
+        assertEquals(List.of(task1,task2), history, "История не верна");
     }
 
     @Test
@@ -134,20 +143,17 @@ class InMemoryHistoryManagerTest {
 
         history = historyManager.getHistory();
         assertEquals(0, history.size(), "История не пустая.");
-        int firstId = 1;
-        task.setId(firstId);
-        historyManager.add(task);
+        historyManager.add(task1);
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(1, history.size(), "История не равна 1");
-        task = new Task("t2", "t2");
-        int secondId = 2;
-        task.setId(secondId);
-        historyManager.add(task);
+        assertEquals(List.of(task1), history, "История не верна");
+        historyManager.add(task2);
         history = historyManager.getHistory();
         assertNotNull(history, "История null.");
-        assertEquals(2, history.size(), "История не равна 2");
-        assertEquals(firstId, history.getFirst().getId(), "Id first task != firstId");
-        assertEquals(secondId, history.getLast().getId(), "Id last task != secondId");
+        assertEquals(List.of(task1, task2), history, "История не верна");
+        historyManager.add(task1);
+        history = historyManager.getHistory();
+        assertNotNull(history, "История null.");
+        assertEquals(List.of(task2, task1), history, "История не верна");
     }
 }

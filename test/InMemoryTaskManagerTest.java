@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryTaskManagerTest {
     TaskManager taskManager;
@@ -118,7 +116,13 @@ class InMemoryTaskManagerTest {
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(subtask, subtasks.getFirst(), "Подзадачи не совпадают.");
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
+        taskManager.getEpicById(epicId);
+        assertEquals(1, taskManager.getHistory().size(), "История не равна 1.");
+        taskManager.getSubtaskById(subtaskId);
+        assertEquals(2, taskManager.getHistory().size(), "История не равна 1.");
         taskManager.deleteEpicById(epicId);
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
         epics = taskManager.getEpicList();
         assertNotNull(epics, "Эпики не возвращаются.");
         assertEquals(0, epics.size(), "Неверное количество эпиков.");
@@ -137,6 +141,13 @@ class InMemoryTaskManagerTest {
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(subtask, subtasks.getFirst(), "Подзадачи не совпадают.");
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
+        taskManager.getEpicById(epicId);
+        assertEquals(1, taskManager.getHistory().size(), "История не равна 1.");
+        taskManager.getSubtaskById(subtaskId);
+        assertEquals(2, taskManager.getHistory().size(), "История не равна 2.");
+        taskManager.deleteEpicById(epicId);
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
         taskManager.deleteAllEpics();
         epics = taskManager.getEpicList();
         assertNotNull(epics, "Эпики не возвращаются.");
@@ -219,7 +230,11 @@ class InMemoryTaskManagerTest {
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(subtask, subtasks.getFirst(), "Подзадачи не совпадают.");
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
+        taskManager.getSubtaskById(subtaskId);
+        assertEquals(1, taskManager.getHistory().size(), "История не равна 1.");
         taskManager.deleteSubtaskById(subtaskId);
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
         subtasks = taskManager.getSubtaskList();
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(0, subtasks.size(), "Неверное количество подзадач.");
@@ -231,7 +246,11 @@ class InMemoryTaskManagerTest {
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(1, subtasks.size(), "Неверное количество подзадач.");
         assertEquals(subtask, subtasks.getFirst(), "Подзадачи не совпадают.");
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
+        taskManager.getSubtaskById(subtaskId);
+        assertEquals(1, taskManager.getHistory().size(), "История не равна 1.");
         taskManager.deleteAllSubtasks();
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
         subtasks = taskManager.getSubtaskList();
         assertNotNull(subtasks, "Подзадачи не возвращаются.");
         assertEquals(0, subtasks.size(), "Неверное количество подзадач.");
@@ -294,7 +313,11 @@ class InMemoryTaskManagerTest {
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
+        taskManager.getTaskById(taskId);
+        assertEquals(1, taskManager.getHistory().size(), "История не равна 1.");
         taskManager.deleteTaskById(taskId);
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
         tasks = taskManager.getTaskList();
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(0, tasks.size(), "Неверное количество задач.");
@@ -306,7 +329,11 @@ class InMemoryTaskManagerTest {
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
         assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
+        taskManager.getTaskById(taskId);
+        assertEquals(1, taskManager.getHistory().size(), "История не равна 1.");
         taskManager.deleteAllTasks();
+        assertEquals(0, taskManager.getHistory().size(), "История не пустая.");
         tasks = taskManager.getTaskList();
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(0, tasks.size(), "Неверное количество задач.");

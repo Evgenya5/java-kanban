@@ -10,13 +10,14 @@ public class Main {
     public static void main(String[] args) throws ManagerSaveException {
 
         System.out.println("Поехали!");
-
+        final TaskManager taskManagerOld = Managers.getDefault();
         final TaskManager taskManager = new FileBackedTaskManager("test.csv");
-        //File file = new File("test.csv");
+        File file = new File("test.csv");
         //final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
         Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
+        taskManagerOld.createTask(task1);
         ArrayList<Integer> subtasks1 = new ArrayList<>();
         Epic epic1 = new Epic("epic1", "epic1desc");
         int epic1Id = taskManager.createTask(epic1);

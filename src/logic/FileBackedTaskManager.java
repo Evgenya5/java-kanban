@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -113,18 +112,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String toString(Task task) {
-        return task.getId() + ", " + TaskType.TASK + ", " + task.getName() + ", " + task.getStatus()+ ", " +
-                task.getDescription();
+        return task.getId() + ", " + TaskType.TASK + ", " + task.getName() + ", " + task.getStatus() + ", " + task.getDescription();
     }
 
     private String toString(Subtask task) {
-        return task.getId() + ", " + TaskType.SUBTASK + ", " + task.getName() + ", " + task.getStatus()+ ", " +
-                task.getDescription() + ", " + task.getEpicId();
+        return task.getId() + ", " + TaskType.SUBTASK + ", " + task.getName() + ", " + task.getStatus() + ", " + task.getDescription() + ", " + task.getEpicId();
     }
 
     private String toString(Epic task) {
-        return task.getId() + ", " + TaskType.EPIC + ", " + task.getName() + ", " + task.getStatus()+ ", " +
-                task.getDescription();
+        return task.getId() + ", " + TaskType.EPIC + ", " + task.getName() + ", " + task.getStatus() + ", " + task.getDescription();
     }
 
     private Task fromString(String value) {
@@ -174,7 +170,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException { //будет восстанавливать данные менеджера из файла при запуске программы
-        FileBackedTaskManager fileBackedTaskManager= new FileBackedTaskManager(file.getName());
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file.getName());
         List<String> tasks;
         try {
             tasks = Files.lines(file.toPath())

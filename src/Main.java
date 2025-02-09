@@ -1,15 +1,20 @@
+import logic.FileBackedTaskManager;
 import logic.Managers;
 import  data.*;
 import logic.TaskManager;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
 
         System.out.println("Поехали!");
 
-        final TaskManager taskManager = Managers.getDefault();
+        final TaskManager taskManager = new FileBackedTaskManager("test.csv");
+        //File file = new File("test.csv");
+        //final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
         Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
@@ -81,6 +86,7 @@ public class Main {
         taskManager.getTaskById(80);
         System.out.println(taskManager.getHistory().size());
         System.out.println(taskManager.getHistory());
+        //taskManager.deleteAllTasks();
 
     }
 }

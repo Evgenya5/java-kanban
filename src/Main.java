@@ -1,18 +1,22 @@
+import logic.FileBackedTaskManager;
 import logic.Managers;
 import  data.*;
 import logic.TaskManager;
+import java.io.File;
 import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
 
         System.out.println("Поехали!");
-
-        final TaskManager taskManager = Managers.getDefault();
+        final TaskManager taskManagerOld = Managers.getDefault();
+        File file = new File("test.csv");
+        final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
         Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
+        taskManagerOld.createTask(task1);
         ArrayList<Integer> subtasks1 = new ArrayList<>();
         Epic epic1 = new Epic("epic1", "epic1desc");
         int epic1Id = taskManager.createTask(epic1);
@@ -42,8 +46,8 @@ public class Main {
         System.out.println(taskManager.getSubtaskList());
         System.out.println(taskManager.getTaskList());
         subtask5.setStatus(TaskStatus.DONE);
-        subtask4.setStatus(TaskStatus.DONE);
-        subtask2.setStatus(TaskStatus.DONE);
+        //subtask4.setStatus(TaskStatus.DONE);
+        //subtask2.setStatus(TaskStatus.DONE);
         taskManager.updateSubtask(subtask2);
         taskManager.updateSubtask(subtask5);
         taskManager.updateSubtask(subtask4);
@@ -81,6 +85,7 @@ public class Main {
         taskManager.getTaskById(80);
         System.out.println(taskManager.getHistory().size());
         System.out.println(taskManager.getHistory());
+        //taskManager.deleteAllTasks();
 
     }
 }

@@ -11,9 +11,8 @@ public class Main {
 
         System.out.println("Поехали!");
         final TaskManager taskManagerOld = Managers.getDefault();
-        final TaskManager taskManager = new FileBackedTaskManager("test.csv");
         File file = new File("test.csv");
-        //final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
+        final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
         Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
@@ -47,8 +46,8 @@ public class Main {
         System.out.println(taskManager.getSubtaskList());
         System.out.println(taskManager.getTaskList());
         subtask5.setStatus(TaskStatus.DONE);
-        subtask4.setStatus(TaskStatus.DONE);
-        subtask2.setStatus(TaskStatus.DONE);
+        //subtask4.setStatus(TaskStatus.DONE);
+        //subtask2.setStatus(TaskStatus.DONE);
         taskManager.updateSubtask(subtask2);
         taskManager.updateSubtask(subtask5);
         taskManager.updateSubtask(subtask4);

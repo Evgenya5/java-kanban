@@ -73,7 +73,7 @@ public class Task {
     }
 
     public void setStartTimeFromString(String formatedTime) {
-        if (formatedTime != "" && formatedTime != null) {
+        if (!Objects.equals(formatedTime, "") && formatedTime != null) {
             this.startTime = LocalDateTime.parse(formatedTime,dateTimeFormater);
         }
     }
@@ -87,7 +87,7 @@ public class Task {
     }
 
     public void setDuration(long durationInMin) {
-        if (durationInMin >=0) {
+        if (durationInMin >= 0) {
             this.duration = Duration.ofMinutes(durationInMin);
         }
     }

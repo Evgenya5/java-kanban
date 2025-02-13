@@ -6,7 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -75,31 +77,43 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private Task fromString(String value) {
-        String[] words = value.split(", ");
-        int id = Integer.parseInt(words[0]);
-        TaskType type = TaskType.valueOf(words[1]);
+        String[] words = value.split(",");
+        int id = Integer.parseInt(words[0].trim());
+        TaskType type = TaskType.valueOf(words[1].trim());
         String name = words[2];
-        TaskStatus status = TaskStatus.valueOf(words[3]);
-        String description = words[4];
+        TaskStatus status = TaskStatus.valueOf(words[3].trim());
+        String description = words[4].trim();
+        String startTime = words[5].trim();
+        Long durationInMin = Long.parseLong(words[6].trim());
         setIdCount(id);
         switch (type) {
             case SUBTASK: {
-                int epicId = Integer.parseInt(words[5]);
+                int epicId = Integer.parseInt(words[8].trim());
                 Subtask task = new Subtask(name, description, epicId);
                 task.setId(id);
                 task.setStatus(status);
+                task.setStartTimeFromString(startTime);
+                task.setDuration(durationInMin);
                 return task;
             }
             case TASK: {
                 Task task = new Task(name, description);
                 task.setId(id);
                 task.setStatus(status);
+                task.setStartTimeFromString(startTime);
+                task.setDuration(durationInMin);
                 return task;
             }
             case EPIC: {
                 Epic task = new Epic(name, description);
                 task.setId(id);
                 task.setStatus(status);
+                task.setStartTimeFromString(startTime);
+                task.setDuration(durationInMin);
+                String endTime = words[7].trim();
+                if (!Objects.equals(endTime, "")) {
+                    task.setEndTimeFromString(endTime);
+                }
                 return task;
             }
             default: {
@@ -117,7 +131,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void save() { //сохранять текущее состояние менеджера в указанный файл
         try {
             Writer fileWriter = new FileWriter(file.getName());
-            fileWriter.write("id, type, name, status, description, epic \n");
+            fileWriter.write("id, type, name, status, description, startTime, duration, endTime, epic \n");
             for (Task task : getTaskList()) {
                 fileWriter.write(task.toString() + "\n");
             }

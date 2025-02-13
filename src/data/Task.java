@@ -1,5 +1,8 @@
 package data;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
@@ -7,11 +10,23 @@ public class Task {
     private String name;
     private String description;
     private TaskStatus status;
+    private Duration duration;
+    private LocalDateTime startTime;
+    protected final DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
         this.status = TaskStatus.NEW;
+        this.duration = Duration.ofMinutes(0);
+    }
+
+    public Task(String name, String description, LocalDateTime startDateTime) {
+        this.name = name;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        this.duration = Duration.ofMinutes(0);
+        this.startTime = startDateTime;
     }
 
     public int getId() {
@@ -46,9 +61,56 @@ public class Task {
         this.description = description;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public String getFormatedStartTime() {
+        if (startTime == null) {
+            return "";
+        }
+        return startTime.format(dateTimeFormater);
+    }
+
+    public void setStartTimeFromString(String formatedTime) {
+        if (formatedTime != "" && formatedTime != null) {
+            this.startTime = LocalDateTime.parse(formatedTime,dateTimeFormater);
+        }
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long durationInMin) {
+        if (durationInMin >=0) {
+            this.duration = Duration.ofMinutes(durationInMin);
+        }
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime == null) {
+            return startTime;
+        }
+
+        return startTime.plusMinutes(duration.toMinutes());
+    }
+
+    public String getEndTimeFormated() {
+        if (startTime == null) {
+            return "";
+        }
+        return getEndTime().format(dateTimeFormater);
+    }
+
     @Override
     public String toString() {
-        return id + ", " + TaskType.TASK + ", " + name + ", " + status + ", " + description;
+        return id + ", " + TaskType.TASK + ", " + name + ", " + status + ", " + description + ", " + getFormatedStartTime() + ", "
+                + duration.toMinutes() + ", " + getEndTimeFormated();
     }
 
     @Override

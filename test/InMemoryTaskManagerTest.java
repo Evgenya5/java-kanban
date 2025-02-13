@@ -338,4 +338,5 @@ class InMemoryTaskManagerTest {
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(0, tasks.size(), "Неверное количество задач.");
     }
+
 }

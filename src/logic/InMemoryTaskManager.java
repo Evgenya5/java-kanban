@@ -257,7 +257,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private Epic changeEpicDateParams(Epic epic) {
 
-        Stream <LocalDateTime> streamStartDate = getSubtaskListByEpic(epic.getId()).stream()
+        Stream<LocalDateTime> streamStartDate = getSubtaskListByEpic(epic.getId()).stream()
                 .filter(Objects::nonNull)
                 .map(Subtask::getStartTime);
         LocalDateTime minStartDate = streamStartDate.filter(Objects::nonNull)
@@ -266,7 +266,7 @@ public class InMemoryTaskManager implements TaskManager {
         Long duration = getSubtaskListByEpic(epic.getId()).stream()
                 .mapToLong(u -> u.getDuration().toMinutes())
                 .sum();
-        Stream <LocalDateTime> streamEndDate = getSubtaskListByEpic(epic.getId()).stream()
+        Stream<LocalDateTime> streamEndDate = getSubtaskListByEpic(epic.getId()).stream()
                 .filter(Objects::nonNull)
                 .map(Subtask::getEndTime);
 

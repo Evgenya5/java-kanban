@@ -3,10 +3,8 @@ package logic;
 import data.Epic;
 import data.Subtask;
 import data.Task;
-
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.TreeSet;
 
 public interface TaskManager {
 

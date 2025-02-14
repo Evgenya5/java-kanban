@@ -14,7 +14,7 @@ public class Main {
         final TaskManager taskManagerOld = Managers.getDefault();
         File file = new File("test.csv");
         final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
-        /*Task task1 = new Task("task1", "task1desc");
+        Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
         LocalDateTime ld = LocalDateTime.now();
@@ -100,7 +100,7 @@ public class Main {
         taskManager.getSubtaskById(60);
         taskManager.getTaskById(80);
         System.out.println(taskManager.getHistory().size());
-        System.out.println(taskManager.getHistory());*/
+        System.out.println(taskManager.getHistory());
         System.out.println("getPrioritizedTasks");
         System.out.println(taskManager.getPrioritizedTasks());
         //taskManager.deleteAllTasks();

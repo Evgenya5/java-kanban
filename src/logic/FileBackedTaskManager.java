@@ -169,9 +169,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             } else if (line.contains(TaskType.SUBTASK.toString())) {
                 Subtask subtask = (Subtask) fileBackedTaskManager.fromString(line);
                 fileBackedTaskManager.subtasks.put(subtask.getId(), subtask);
+                fileBackedTaskManager.addPrioritizedTask(subtask);
             } else if (line.contains(TaskType.TASK.toString())) {
                 Task task = fileBackedTaskManager.fromString(line);
                 fileBackedTaskManager.tasks.put(task.getId(), task);
+                fileBackedTaskManager.addPrioritizedTask(task);
             }
         }
         for (Subtask subtask : fileBackedTaskManager.subtasks.values()) {

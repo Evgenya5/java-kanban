@@ -14,7 +14,7 @@ public class Main {
         final TaskManager taskManagerOld = Managers.getDefault();
         File file = new File("test.csv");
         final TaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
-        Task task1 = new Task("task1", "task1desc");
+        /*Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
         LocalDateTime ld = LocalDateTime.now();
@@ -49,6 +49,8 @@ public class Main {
         subtask3.setDuration(360);
         subtask1.setStartTime(LocalDateTime.now().plusMinutes(120));
         subtask1.setDuration(120);
+        taskManager.updateSubtask(subtask3);
+        taskManager.updateSubtask(subtask1);
         System.out.println("Вывели все subtask by epic1");
         System.out.println(taskManager.getSubtaskListByEpic(epic1Id));
         System.out.println("Вывели все subtask by epic2");
@@ -98,7 +100,7 @@ public class Main {
         taskManager.getSubtaskById(60);
         taskManager.getTaskById(80);
         System.out.println(taskManager.getHistory().size());
-        System.out.println(taskManager.getHistory());
+        System.out.println(taskManager.getHistory());*/
         System.out.println("getPrioritizedTasks");
         System.out.println(taskManager.getPrioritizedTasks());
         //taskManager.deleteAllTasks();

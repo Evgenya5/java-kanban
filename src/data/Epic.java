@@ -34,6 +34,10 @@ public class Epic extends Task {
         this.endTime = endTime;
     }
 
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
     public String getEndTimeFormated() {
         if (endTime == null) {
             return "";

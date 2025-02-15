@@ -1,0 +1,6 @@
+id, type, name, status, description, startTime, duration, endTime, epic 
+2, TASK, Test, NEW, Test description, , 0, 
+4, TASK, Test, NEW, Test description, 14.03.2025 14:00, 0, 14.03.2025 14:00
+1, SUBTASK, Test, NEW, Test description, , 0, , 0
+3, SUBTASK, Test, NEW, Test description, 14.01.2025 14:00, 0, 14.01.2025 14:00, 0
+0, EPIC, Test, NEW, Test description, 14.01.2025 14:00, 0, 14.01.2025 14:00

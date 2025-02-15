@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    private ArrayList<Integer> subtasks;
-    LocalDateTime endTime;
+    private final ArrayList<Integer> subtasks;
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description);

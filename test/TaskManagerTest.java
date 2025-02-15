@@ -23,8 +23,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     protected int subtaskId;
     protected int epicId;
 
-    protected void initTasks(T tm) {
-        taskManager = tm;
+    protected void initTasks() {
         epic = new Epic("Test", "Test description");
         epicId = taskManager.createTask(epic);
         subtask = new Subtask("Test", "Test description", epicId);
@@ -402,7 +401,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void canGetPrioritizedTasks() { //Можем получать список всех задач
-        Subtask subtaskWithDate3 = subtaskWithDate2;
+        Subtask subtaskWithDate3 = new Subtask("Test", "Test description", epicId, LocalDateTime.of(2025,2, 14, 14,0));
         int tId = taskManager.createTask(taskWithDate);
         int stId1 = taskManager.createTask(subtaskWithDate1);
         int stId2 = taskManager.createTask(subtaskWithDate2);
@@ -414,19 +413,20 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.createTask(subtaskWithDate3);
         prioritizedTasks = taskManager.getPrioritizedTasks();
         assertNotNull(prioritizedTasks, "Задачи не возвращаются.");
-        assertEquals(3, prioritizedTasks.size(), "Неверное количество задач.");
+        assertEquals(3, prioritizedTasks.size(), "Неверное количество задач. 2");
         assertEquals(taskList, prioritizedTasks.stream().toList(), "Задачи не по порядку.");
         Task t1 = taskWithDate;
         t1.setStartTime(LocalDateTime.of(2025, 7, 14, 14, 0));
         t1.setId(tId);
         taskManager.updateTask(t1);
-        subtaskWithDate3.setStartTime(LocalDateTime.of(2025, 10, 14, 14, 0));
-        subtaskWithDate3.setId(stId1);
-        taskManager.updateSubtask(subtaskWithDate3);
+        Subtask subtaskWithDate4 = new Subtask("Test", "Test description", epicId);
+        subtaskWithDate4.setStartTime(LocalDateTime.of(2025, 10, 14, 14, 0));
+        subtaskWithDate4.setId(stId1);
+        taskManager.updateSubtask(subtaskWithDate4);
         prioritizedTasks = taskManager.getPrioritizedTasks();
         final List<Task> taskListChange = List.of(taskManager.getSubtaskById(stId2),taskManager.getTaskById(tId),taskManager.getSubtaskById(stId1));
         assertNotNull(prioritizedTasks, "Задачи не возвращаются.");
-        assertEquals(3, prioritizedTasks.size(), "Неверное количество задач.");
+        assertEquals(3, prioritizedTasks.size(), "Неверное количество задач. 3");
         assertNotEquals(taskList, prioritizedTasks.stream().toList(), "Задачи не по порядку.");
         assertEquals(taskListChange, prioritizedTasks.stream().toList(), "Задачи не по порядку.");
     }

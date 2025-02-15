@@ -76,13 +76,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() { //Удаление всех задач
-        tasks.values().forEach(task -> historyManager.remove(task.getId()));
+        tasks.values().forEach(task ->
+        {
+            historyManager.remove(task.getId());
+            removePrioritizedTask(task);
+        });
         tasks.clear();
     }
 
     @Override
     public void deleteAllSubtasks() { //Удаление всех подзадач
-        subtasks.values().forEach(subtask -> historyManager.remove(subtask.getId()));
+        subtasks.values().forEach(subtask ->
+        {
+            historyManager.remove(subtask.getId());
+            removePrioritizedTask(subtask);
+        });
         subtasks.clear();
         epics.values().forEach(epic -> { //очищаем сабтаски в эпике
             epic.getSubtasks().clear();
@@ -93,7 +101,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() { //Удаление всех эпиков
-        subtasks.values().forEach(subtask -> historyManager.remove(subtask.getId()));
+        subtasks.values().forEach(subtask ->
+        {
+            historyManager.remove(subtask.getId());
+            removePrioritizedTask(subtask);
+        });
         epics.values().forEach(epic -> historyManager.remove(epic.getId()));
         subtasks.clear();
         epics.clear();
@@ -123,8 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) { //Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
         Subtask savedSubtask = subtasks.get(subtask.getId());
-        prioritizedTasks.remove((Task) subtask);
-
+        removePrioritizedTask(savedSubtask);
         if (savedSubtask == null) {
             return;
         }
@@ -143,6 +154,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) { //Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
         if (taskExist(task.getId())) {
+            removePrioritizedTask(task);
             tasks.put(task.getId(), task);
             addPrioritizedTask(task);
         }
@@ -160,14 +172,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTaskById(Integer id) { //Удаление по идентификатору.
-        tasks.remove(id);
+        Task task = tasks.remove(id);
+        removePrioritizedTask(task);
         historyManager.remove(id);
     }
 
     @Override
     public void deleteSubtaskById(Integer id) { //Удаление по идентификатору.
-        int epicId = subtasks.get(id).getEpicId();
-        subtasks.remove(id);
+        Subtask subtask = subtasks.remove(id);
+        if (subtask == null) {
+            return;
+        }
+        removePrioritizedTask(subtask);
+        int epicId = subtask.getEpicId();
         historyManager.remove(id);
         if (epicExist(epicId)) {
             epics.get(epicId).deleteSubtask(id);
@@ -185,7 +202,10 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager.remove(id);
         for (int subtaskId : epic.getSubtasks()) {
             historyManager.remove(subtaskId);
-            subtasks.remove(subtaskId);
+            Subtask subtask = subtasks.remove(subtaskId);
+            if (subtask != null) {
+                removePrioritizedTask(subtask);
+            }
         }
     }
 
@@ -237,6 +257,16 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         prioritizedTasks.add(task);
+    }
+
+    private void removePrioritizedTask(Task task) {
+        if (task == null) {
+            return;
+        }
+        if (task.getStartTime() == null) {
+            return;
+        }
+        prioritizedTasks.remove(task);
     }
 
     private Epic changeEpicStatus(Epic epic) {

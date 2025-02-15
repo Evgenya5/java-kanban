@@ -6,14 +6,13 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
-    FileBackedTaskManager taskManager;
     File file;
 
     @BeforeEach
     public void beforeEach() {
         file = new File("autotest.csv");
         taskManager = new FileBackedTaskManager(file.getName());
-        initTasks(taskManager);
+        initTasks();
     }
 
     @Test

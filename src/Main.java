@@ -103,7 +103,8 @@ public class Main {
         System.out.println(taskManager.getHistory());
         System.out.println("getPrioritizedTasks");
         System.out.println(taskManager.getPrioritizedTasks());
-        //taskManager.deleteAllTasks();
+        taskManager.deleteAllTasks();
+        System.out.println(taskManager.getPrioritizedTasks());
 
     }
 }

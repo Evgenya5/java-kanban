@@ -76,8 +76,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllTasks() { //Удаление всех задач
-        tasks.values().forEach(task ->
-        {
+        tasks.values().forEach(task -> {
             historyManager.remove(task.getId());
             removePrioritizedTask(task);
         });
@@ -86,8 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllSubtasks() { //Удаление всех подзадач
-        subtasks.values().forEach(subtask ->
-        {
+        subtasks.values().forEach(subtask -> {
             historyManager.remove(subtask.getId());
             removePrioritizedTask(subtask);
         });
@@ -101,8 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteAllEpics() { //Удаление всех эпиков
-        subtasks.values().forEach(subtask ->
-        {
+        subtasks.values().forEach(subtask -> {
             historyManager.remove(subtask.getId());
             removePrioritizedTask(subtask);
         });

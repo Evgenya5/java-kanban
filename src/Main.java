@@ -3,6 +3,7 @@ import logic.Managers;
 import  data.*;
 import logic.TaskManager;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main {
@@ -16,6 +17,11 @@ public class Main {
         Task task1 = new Task("task1", "task1desc");
         Task task2 = new Task("task2", "task2desc");
         Task task3 = new Task("task3", "task3desc");
+        LocalDateTime ld = LocalDateTime.now();
+        Task task4 = new Task("task4", "task4desc",ld);
+        Task task5 = new Task("task5", "task5desc",ld);
+        task5.setDuration(10);
+        task4.setDuration(15);
         taskManagerOld.createTask(task1);
         ArrayList<Integer> subtasks1 = new ArrayList<>();
         Epic epic1 = new Epic("epic1", "epic1desc");
@@ -34,7 +40,17 @@ public class Main {
         taskManager.createTask(subtask5);
         taskManager.createTask(task1);
         taskManager.createTask(task2);
+        taskManager.createTask(task4);
+        taskManager.createTask(task5);
         taskManager.createTask(task3);
+        taskManager.getTaskById(task1.getId()).setStartTime(LocalDateTime.now());
+        taskManager.getTaskById(task1.getId()).setDuration(38L);
+        subtask3.setStartTime(LocalDateTime.now());
+        subtask3.setDuration(360);
+        subtask1.setStartTime(LocalDateTime.now().plusMinutes(120));
+        subtask1.setDuration(120);
+        taskManager.updateSubtask(subtask3);
+        taskManager.updateSubtask(subtask1);
         System.out.println("Вывели все subtask by epic1");
         System.out.println(taskManager.getSubtaskListByEpic(epic1Id));
         System.out.println("Вывели все subtask by epic2");
@@ -85,7 +101,10 @@ public class Main {
         taskManager.getTaskById(80);
         System.out.println(taskManager.getHistory().size());
         System.out.println(taskManager.getHistory());
-        //taskManager.deleteAllTasks();
+        System.out.println("getPrioritizedTasks");
+        System.out.println(taskManager.getPrioritizedTasks());
+        taskManager.deleteAllTasks();
+        System.out.println(taskManager.getPrioritizedTasks());
 
     }
 }

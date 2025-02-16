@@ -3,8 +3,8 @@ package logic;
 import data.Epic;
 import data.Subtask;
 import data.Task;
-
 import java.util.ArrayList;
+import java.util.Set;
 
 public interface TaskManager {
 
@@ -47,4 +47,6 @@ public interface TaskManager {
     void deleteEpicById(Integer id);
 
     ArrayList<Task> getHistory();
+
+    Set<Task> getPrioritizedTasks();
 }

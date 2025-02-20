@@ -56,7 +56,7 @@ public class EpicHandler extends BaseHttpHandler {
                         sendNotFound(exchange,response);
                         return;
                     } else {
-                        if (params.length >= 4){
+                        if (params.length >= 4) {
                             response = taskManager.getSubtaskListByEpic(epicById.getId()).stream()
                                     .map(Subtask::toString)
                                     .collect(Collectors.joining("\n"));

@@ -1,11 +1,9 @@
-package API;
+package api;
 
 import com.sun.net.httpserver.HttpExchange;
 import data.Task;
 import logic.TaskManager;
-
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.stream.Collectors;
 
 public class HistoryHandler extends BaseHttpHandler {

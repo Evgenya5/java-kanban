@@ -1,29 +1,25 @@
-package API;
+package api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
-import data.Epic;
-import data.Subtask;
+import data.Task;
 import logic.TaskManager;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-public class EpicHandler extends BaseHttpHandler {
-    public EpicHandler(TaskManager taskManager) {
+public class TaskHandler extends BaseHttpHandler {
+    public TaskHandler(TaskManager taskManager) {
         super(taskManager);
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         super.handle(exchange);
-        System.out.println("Началась обработка /epics запроса от клиента." + method);
+        System.out.println("Началась обработка /tasks запроса от клиента." + method);
         switch (method) {
             case "POST":
                 InputStream inputStream = exchange.getRequestBody(); // дожидаемся получения всех данных в виде массива байтов и конвертируем их в строку
@@ -33,15 +29,15 @@ public class EpicHandler extends BaseHttpHandler {
                         .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter().nullSafe())
                         .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe());
                 Gson gson = gsonBuilder.create();
-                Epic epic = gson.fromJson(body, Epic.class);
+                Task task = gson.fromJson(body, Task.class);
                 int returnId = 0;
-                if (epic.getId() >= 1) {
-                    returnId = taskManager.updateEpic(epic);
+                if (task.getId() >= 1) {
+                    returnId = taskManager.updateTask(task);
                 } else {
-                    returnId = taskManager.createTask(epic);
+                    returnId = taskManager.createTask(task);
                 }
                 if (returnId < 0) {
-                    response = "Обновление/создание не выполнено.";
+                    response = "Задача пересекается с другой по времени. Обновление/создание не выполнено.";
                     sendHasInteractions(exchange,response);
                     return;
                 } else {
@@ -52,23 +48,17 @@ public class EpicHandler extends BaseHttpHandler {
                 String[] params = path.split("/");
                 if (params.length >= 3) {
                     int id = Integer.parseInt(params[2]);
-                    Epic epicById = taskManager.getEpicById(id);
-                    if (epicById == null) {
+                    Task taskById = taskManager.getTaskById(id);
+                    if (taskById == null) {
                         response = "Задача с таким id не найдена.";
                         sendNotFound(exchange,response);
                         return;
                     } else {
-                        if (params.length >= 4){
-                            response = taskManager.getSubtaskListByEpic(epicById.getId()).stream()
-                                    .map(Subtask::toString)
-                                    .collect(Collectors.joining("\n"));
-                        } else {
-                            response = epicById.toString();
-                        }
+                        response = taskById.toString();
                     }
                 } else {
-                    response = taskManager.getEpicList().stream()
-                            .map(Epic::toString)
+                    response = taskManager.getTaskList().stream()
+                            .map(Task::toString)
                             .collect(Collectors.joining("\n"));
                 }
                 break;
@@ -77,9 +67,9 @@ public class EpicHandler extends BaseHttpHandler {
                 String[] params = path.split("/");
                 if (params.length >= 3) {
                     int id = Integer.parseInt(params[2]);
-                    taskManager.deleteEpicById(id);
+                    taskManager.deleteTaskById(id);
                 } else {
-                    taskManager.deleteAllEpics();
+                    taskManager.deleteAllTasks();
                 }
                 break;
             }

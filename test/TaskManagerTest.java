@@ -1,8 +1,11 @@
 import data.Epic;
 import data.Subtask;
 import data.Task;
+import data.TaskStatus;
 import logic.TaskManager;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -221,9 +224,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void subtaskIdGenerateAutomatically() {
-        Subtask subtask2 = new Subtask("st2", "st2", 0);
+        Subtask subtask2 = new Subtask("st2", "st2", epicId);
         subtask2.setId(subtaskId);
-        taskManager.createTask(subtask2);
+        System.out.println(taskManager.getSubtaskList());
+        System.out.println(taskManager.createTask(subtask2));
         assertNotEquals(subtask2.getId(), subtask.getId(), "ID равны");
     }
 
@@ -400,7 +404,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void canGetPrioritizedTasks() { //Можем получать список всех задач
-        Subtask subtaskWithDate3 = new Subtask("Test", "Test description", epicId, LocalDateTime.of(2025,2, 14, 14,0));
+        Subtask subtaskWithDate3 = new Subtask("Test", "Test description", TaskStatus.NEW, Duration.ofMinutes(8), LocalDateTime.of(2025,2, 14, 14,0), epicId);
         int tId = taskManager.createTask(taskWithDate);
         int stId1 = taskManager.createTask(subtaskWithDate1);
         int stId2 = taskManager.createTask(subtaskWithDate2);

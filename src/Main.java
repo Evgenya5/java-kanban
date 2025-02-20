@@ -4,11 +4,10 @@ import  data.*;
 import logic.TaskManager;
 import java.io.File;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class Main {
 
-    public static void main(String[] args) throws ManagerSaveException {
+    public static void main(String[] args) {
 
         System.out.println("Поехали!");
         final TaskManager taskManagerOld = Managers.getDefault();
@@ -23,7 +22,6 @@ public class Main {
         task5.setDuration(10);
         task4.setDuration(15);
         taskManagerOld.createTask(task1);
-        ArrayList<Integer> subtasks1 = new ArrayList<>();
         Epic epic1 = new Epic("epic1", "epic1desc");
         int epic1Id = taskManager.createTask(epic1);
         Epic epic2 = new Epic("epic2", "epic2desc");
@@ -101,10 +99,9 @@ public class Main {
         taskManager.getTaskById(80);
         System.out.println(taskManager.getHistory().size());
         System.out.println(taskManager.getHistory());
-        System.out.println("getPrioritizedTasks");
+        /*System.out.println("getPrioritizedTasks");
         System.out.println(taskManager.getPrioritizedTasks());
-        taskManager.deleteAllTasks();
-        System.out.println(taskManager.getPrioritizedTasks());
-
+        //taskManager.deleteAllTasks();
+        System.out.println(taskManager.getPrioritizedTasks());*/
     }
 }

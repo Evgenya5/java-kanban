@@ -12,7 +12,7 @@ public class Task {
     private TaskStatus status;
     private Duration duration;
     private LocalDateTime startTime;
-    protected final DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    protected static final DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public Task(String name, String description) {
         this.name = name;
@@ -27,6 +27,14 @@ public class Task {
         this.status = TaskStatus.NEW;
         this.duration = Duration.ofMinutes(0);
         this.startTime = startDateTime;
+    }
+
+    public Task(String name, String description, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.description = description;
+        this.status = taskStatus;
     }
 
     public int getId() {
@@ -80,6 +88,13 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        if (startTime == "") {
+            return;
+        }
+        this.startTime = LocalDateTime.parse(startTime,dateTimeFormater);
     }
 
     public Duration getDuration() {

@@ -6,7 +6,7 @@ import logic.TaskManager;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class BaseHttpHandler implements HttpHandler{
+public class BaseHttpHandler implements HttpHandler {
     protected final TaskManager taskManager;// = FileBackedTaskManager.loadFromFile(file);
     int statusCode;
     protected String method;

@@ -1,7 +1,6 @@
 package api;
 
 import com.sun.net.httpserver.HttpExchange;
-import data.Task;
 import logic.TaskManager;
 import java.io.IOException;
 import java.util.stream.Collectors;

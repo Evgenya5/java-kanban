@@ -14,11 +14,17 @@ public class HttpTaskServer {
     private static final int PORT = 8081;
     final TaskManager taskManager;
     private HttpServer httpServer;
-    //private  static Gson gson;
 
-    public HttpTaskServer(TaskManager taskManager) {
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
         this.taskManager = taskManager;
-        //HttpServer httpServer;
+        httpServer = HttpServer.create();
+        httpServer.bind(new InetSocketAddress(PORT), 0); // связываем сервер с сетевым портом
+        httpServer.createContext("/subtasks", new SubtaskHandler(taskManager)); // связываем путь и обработчик
+        httpServer.createContext("/tasks", new TaskHandler(taskManager)); // связываем путь и обработчик
+        httpServer.createContext("/epics", new EpicHandler(taskManager)); // связываем путь и обработчик
+        httpServer.createContext("/history", new HistoryHandler(taskManager)); // связываем путь и обработчик
+        httpServer.createContext("/prioritized", new PrioritizedHandler(taskManager)); // связываем путь и обработчик
+
     }
 
     public static void main(String[] args) throws IOException {
@@ -35,14 +41,7 @@ public class HttpTaskServer {
         return gsonBuilder.create();
     }
 
-    public void start() throws IOException {
-        httpServer = HttpServer.create();
-        httpServer.bind(new InetSocketAddress(PORT), 0); // связываем сервер с сетевым портом
-        httpServer.createContext("/subtasks", new SubtaskHandler(taskManager)); // связываем путь и обработчик
-        httpServer.createContext("/tasks", new TaskHandler(taskManager)); // связываем путь и обработчик
-        httpServer.createContext("/epics", new EpicHandler(taskManager)); // связываем путь и обработчик
-        httpServer.createContext("/history", new HistoryHandler(taskManager)); // связываем путь и обработчик
-        httpServer.createContext("/prioritized", new PrioritizedHandler(taskManager)); // связываем путь и обработчик
+    public void start() {
         httpServer.start(); // запускаем сервер
         System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
     }

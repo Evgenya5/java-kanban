@@ -1,34 +1,33 @@
 package api;
 
-import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
 import data.Task;
 import logic.TaskManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 public class TaskHandler extends BaseHttpHandler {
+    private final TaskManager taskManager;
+
     public TaskHandler(TaskManager taskManager) {
-        super(taskManager);
+        super();
+        this.taskManager = taskManager;
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        super.handle(exchange);
+        statusCode = 200;
+        method = exchange.getRequestMethod();
+        response = "";
+        path = exchange.getRequestURI().getPath();
         System.out.println("Началась обработка /tasks запроса от клиента." + method);
         switch (method) {
             case "POST":
                 InputStream inputStream = exchange.getRequestBody(); // дожидаемся получения всех данных в виде массива байтов и конвертируем их в строку
                 String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
                 System.out.println("Тело запроса:\n" + body);
-                GsonBuilder gsonBuilder = new GsonBuilder()
-                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter().nullSafe())
-                        .registerTypeAdapter(Duration.class, new DurationAdapter().nullSafe());
-                Gson gson = gsonBuilder.create();
                 Task task = gson.fromJson(body, Task.class);
                 int returnId = 0;
                 if (task.getId() >= 1) {
@@ -38,8 +37,7 @@ public class TaskHandler extends BaseHttpHandler {
                 }
                 if (returnId < 0) {
                     response = "Задача пересекается с другой по времени. Обновление/создание не выполнено.";
-                    sendHasInteractions(exchange,response);
-                    return;
+                    statusCode = 406;
                 } else {
                     statusCode = 201;
                 }
@@ -51,14 +49,13 @@ public class TaskHandler extends BaseHttpHandler {
                     Task taskById = taskManager.getTaskById(id);
                     if (taskById == null) {
                         response = "Задача с таким id не найдена.";
-                        sendNotFound(exchange,response);
-                        return;
+                        statusCode = 404;
                     } else {
-                        response = taskById.toString();
+                        response = gson.toJson(taskById);
                     }
                 } else {
                     response = taskManager.getTaskList().stream()
-                            .map(Task::toString)
+                            .map(t -> gson.toJson(t))
                             .collect(Collectors.joining("\n"));
                 }
                 break;
@@ -75,7 +72,7 @@ public class TaskHandler extends BaseHttpHandler {
             }
             default:
                 response = "Некорректный метод!";
-                statusCode = 400;
+                statusCode = 405;
         }
         sendText(exchange,response,statusCode);
     }

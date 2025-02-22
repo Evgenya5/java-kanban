@@ -98,27 +98,21 @@ public class HttpTaskManagerTasksTest {
         // создаём задачу
         Task task = new Task("Test 1", "Testing task 1", TaskStatus.NEW, Duration.ofMinutes(5), LocalDateTime.now());
         Task task1 = new Task("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(50), LocalDateTime.of(2025,2,19,16,20));
-        // конвертируем её в JSON
-        String taskJson = gson.toJson(task);
+        manager.createTask(task);
+        manager.createTask(task1);
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create(URL_BASE + "tasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        // вызываем рест, отвечающий за создание задач
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task1);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        request = HttpRequest.newBuilder().uri(url).GET().build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         List<Task> tasksFromManager = manager.getTaskList();
-        assertEquals(response.body(), tasksFromManager.stream().map(Task::toString).collect(Collectors.joining("\n")), "Некорректное количество задач");
+        assertEquals(response.body(), tasksFromManager.stream().map(t -> gson.toJson(t)).collect(Collectors.joining("\n")), "Некорректное количество задач");
         url = URI.create(URL_BASE + "tasks/" + tasksFromManager.getFirst().getId());
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        assertEquals(response.body(), tasksFromManager.getFirst().toString(), "Некорректная задача");
+        assertEquals(response.body(), gson.toJson(tasksFromManager.getFirst()), "Некорректная задача");
         url = URI.create(URL_BASE + "tasks/" + 100);
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -131,25 +125,18 @@ public class HttpTaskManagerTasksTest {
         Task task = new Task("Test 1", "Testing task 1", TaskStatus.NEW, Duration.ofMinutes(5), LocalDateTime.now());
         Task task1 = new Task("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(50), LocalDateTime.of(2025,2,19,16,20));
         Task task2 = new Task("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(50), LocalDateTime.of(2025,1,19,16,20));
+        manager.createTask(task);
+        manager.createTask(task1);
+        manager.createTask(task2);
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
         // создаём HTTP-клиент и запрос
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(URL_BASE + "tasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task1);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task2);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         List<Task> tasksFromManager = manager.getTaskList();
         assertEquals(3, tasksFromManager.size(), "Некорректное количество задач");
-        url = URI.create(URL_BASE + "tasks/" + tasksFromManager.getFirst().getId());
-        request = HttpRequest.newBuilder().uri(url).DELETE().build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        URI url = URI.create(URL_BASE + "tasks/" + tasksFromManager.getFirst().getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         tasksFromManager = manager.getTaskList();
         assertEquals(200, response.statusCode());
         assertEquals(2, tasksFromManager.size(), "Некорректное количество задач");
@@ -214,30 +201,22 @@ public class HttpTaskManagerTasksTest {
         // создаём задачу
         Epic epic = new Epic("epic", "epic");
         int epicId = manager.createTask(epic);
-        // создаём задачу
         Subtask task = new Subtask("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(5), LocalDateTime.now(), epicId);
         Subtask task1 = new Subtask("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(50), LocalDateTime.of(2025,2,19,16,20), epicId);
-        // конвертируем её в JSON
-        String taskJson = gson.toJson(task);
-        // создаём HTTP-клиент и запрос
+        manager.createTask(task);
+        manager.createTask(task1);
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create(URL_BASE + "subtasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        // вызываем рест, отвечающий за создание задач
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task1);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        request = HttpRequest.newBuilder().uri(url).GET().build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         List<Subtask> tasksFromManager = manager.getSubtaskList();
-        assertEquals(response.body(), tasksFromManager.stream().map(Subtask::toString).collect(Collectors.joining("\n")), "Некорректное количество задач");
+        assertEquals(response.body(), tasksFromManager.stream().map(t -> gson.toJson(t)).collect(Collectors.joining("\n")), "Некорректное количество задач");
         url = URI.create(URL_BASE + "subtasks/" + tasksFromManager.getFirst().getId());
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        assertEquals(response.body(), tasksFromManager.getFirst().toString(), "Некорректная задача");
+        assertEquals(response.body(), gson.toJson(tasksFromManager.getFirst()), "Некорректная задача");
         url = URI.create(URL_BASE + "subtasks/" + 100);
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -253,25 +232,14 @@ public class HttpTaskManagerTasksTest {
         Subtask task = new Subtask("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(5), LocalDateTime.now(), epicId);
         Subtask task1 = new Subtask("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(50), LocalDateTime.of(2025,2,19,16,20), epicId);
         Subtask task2 = new Subtask("Test 2", "Testing task 2", TaskStatus.NEW, Duration.ofMinutes(50), LocalDateTime.of(2025,1,19,16,20), epicId);
-        // конвертируем её в JSON
-        String taskJson = gson.toJson(task);
-        // создаём HTTP-клиент и запрос
+        manager.createTask(task);
+        manager.createTask(task1);
+        manager.createTask(task2);
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(URL_BASE + "subtasks");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task1);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task2);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         List<Subtask> tasksFromManager = manager.getSubtaskList();
-        assertEquals(3, tasksFromManager.size(), "Некорректное количество задач");
-        url = URI.create(URL_BASE + "subtasks/" + tasksFromManager.getFirst().getId());
-        request = HttpRequest.newBuilder().uri(url).DELETE().build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        URI url = URI.create(URL_BASE + "subtasks/" + tasksFromManager.getFirst().getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         tasksFromManager = manager.getSubtaskList();
         assertEquals(200, response.statusCode());
         assertEquals(2, tasksFromManager.size(), "Некорректное количество задач");
@@ -287,7 +255,6 @@ public class HttpTaskManagerTasksTest {
     public void testPostEpics() throws IOException, InterruptedException {
         // создаём задачу
         Epic task = new Epic("Test 2", "Testing task 2");
-        Epic task1 = task;
         // конвертируем её в JSON
         String taskJson = gson.toJson(task);
         // создаём HTTP-клиент и запрос
@@ -324,27 +291,20 @@ public class HttpTaskManagerTasksTest {
         // создаём задачу
         Epic task = new Epic("Test 1", "Testing task 1");
         Epic task1 = new Epic("Test 2", "Testing task 2");
-        // конвертируем её в JSON
-        String taskJson = gson.toJson(task);
-        // создаём HTTP-клиент и запрос
+        manager.createTask(task);
+        manager.createTask(task1);
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create(URL_BASE + "epics");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        // вызываем рест, отвечающий за создание задач
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task1);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        request = HttpRequest.newBuilder().uri(url).GET().build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         List<Epic> tasksFromManager = manager.getEpicList();
-        assertEquals(response.body(), tasksFromManager.stream().map(Task::toString).collect(Collectors.joining("\n")), "Некорректное количество задач");
+        assertEquals(response.body(), tasksFromManager.stream().map(t -> gson.toJson(t)).collect(Collectors.joining("\n")), "Некорректное количество задач");
         url = URI.create(URL_BASE + "epics/" + tasksFromManager.getFirst().getId());
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
-        assertEquals(response.body(), tasksFromManager.getFirst().toString(), "Некорректная задача");
+        assertEquals(response.body(), gson.toJson(tasksFromManager.getFirst()), "Некорректная задача");
         url = URI.create(URL_BASE + "epics/" + 100);
         request = HttpRequest.newBuilder().uri(url).GET().build();
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -362,7 +322,7 @@ public class HttpTaskManagerTasksTest {
         response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         assertEquals(response.body(), manager.getSubtaskListByEpic(tasksFromManager.getFirst().getId()).stream()
-                .map(Task::toString).collect(Collectors.joining("\n")), "Некорректный список подзадач");
+                .map(t -> gson.toJson(t)).collect(Collectors.joining("\n")), "Некорректный список подзадач");
     }
 
     @Test
@@ -371,25 +331,14 @@ public class HttpTaskManagerTasksTest {
         Epic task = new Epic("Test 1", "Testing task 1");
         Epic task1 = new Epic("Test 2", "Testing task 2");
         Epic task2 = new Epic("Test 2", "Testing task 2");
-        // конвертируем её в JSON
-        String taskJson = gson.toJson(task);
-        // создаём HTTP-клиент и запрос
+        manager.createTask(task);
+        manager.createTask(task1);
+        manager.createTask(task2);
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create(URL_BASE + "epics");
-        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        // вызываем рест, отвечающий за создание задач
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task1);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        taskJson = gson.toJson(task2);
-        request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(taskJson)).build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
         List<Epic> tasksFromManager = manager.getEpicList();
-        assertEquals(3, tasksFromManager.size(), "Некорректное количество задач");
-        url = URI.create(URL_BASE + "epics/" + tasksFromManager.getFirst().getId());
-        request = HttpRequest.newBuilder().uri(url).DELETE().build();
-        response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        URI url = URI.create(URL_BASE + "epics/" + tasksFromManager.getFirst().getId());
+        HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         tasksFromManager = manager.getEpicList();
         assertEquals(200, response.statusCode());
         assertEquals(2, tasksFromManager.size(), "Некорректное количество задач");
@@ -422,7 +371,7 @@ public class HttpTaskManagerTasksTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         List<Task> historyFromManager = manager.getHistory();
-        assertEquals(response.body(), historyFromManager.stream().map(Task::toString).collect(Collectors.joining("\n")), "Некорректное количество задач");
+        assertEquals(response.body(), historyFromManager.stream().map(t -> gson.toJson(t)).collect(Collectors.joining("\n")), "Некорректное количество задач");
     }
 
     @Test
@@ -446,6 +395,6 @@ public class HttpTaskManagerTasksTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode());
         Set<Task> prioritizedFromManager = manager.getPrioritizedTasks();
-        assertEquals(response.body(), prioritizedFromManager.stream().map(Task::toString).collect(Collectors.joining("\n")), "Некорректное количество задач");
+        assertEquals(response.body(), prioritizedFromManager.stream().map(t -> gson.toJson(t)).collect(Collectors.joining("\n")), "Некорректное количество задач");
     }
 }
